@@ -1,4 +1,4 @@
-package barter.barter_it_api.api
+package barter.barter_it_api.api.item
 
 import barter.barter_it_api.domain.Item
 import barter.barter_it_api.domain.ItemFacade

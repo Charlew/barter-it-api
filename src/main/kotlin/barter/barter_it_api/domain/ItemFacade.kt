@@ -8,6 +8,6 @@ class ItemFacade(private val repository: ItemRepository) {
 
     fun getAllItems(): MutableIterable<Item> = repository.findAll()
 
-    fun getItemById(id: String): Item? = repository.findById(id).orElseGet(null)
-
+    fun getItemById(id: String): Item? = repository.findById(id)
+            .orElse(null)
 }

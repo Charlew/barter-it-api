@@ -1,0 +1,6 @@
+language: java
+
+jdk:
+  - openjdk13
+
+install: ./gradlew clean build

@@ -10,4 +10,6 @@ class ItemFacade(private val repository: ItemRepository) {
 
     fun getItemById(id: String): Item? = repository.findById(id)
             .orElse(null)
+
+    fun create(itemRequest: ItemRequest): Item = repository.save(itemRequest.toItem())
 }

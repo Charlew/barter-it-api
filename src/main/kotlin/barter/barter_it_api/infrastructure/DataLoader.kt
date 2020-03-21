@@ -20,7 +20,7 @@ class DataLoader(private val repository: ItemRepository) {
 
     private fun sampleItems(): List<Item> {
         return listOf(
-                Item(name = "Audi", description = "Super auto", category = CARS, count = 1),
+                Item(name = "Audi", description = "Super auto", category = AUTOMOTIVE, count = 1),
                 Item(name = "Pralka", description = "Niezawodna", category = HOUSEHOLD, count = 2),
                 Item(name = "Krzesło", description = "Solidne", category = FURNITURE, count = 4),
                 Item(name = "Zegarek", description = "Elegancki", category = JEWELRY_AND_WATCHES, count = 3)

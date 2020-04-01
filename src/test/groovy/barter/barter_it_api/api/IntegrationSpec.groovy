@@ -25,10 +25,4 @@ abstract class IntegrationSpec extends Specification {
 
     @Autowired
     ObjectMapper objectMapper
-
-    @Value('${username}')
-    protected String username
-
-    @Value('${password}')
-    protected String password
 }

@@ -4,9 +4,7 @@ import barter.barter_it_api.api.IntegrationSpec
 import barter.barter_it_api.domain.Categories
 import barter.barter_it_api.domain.Conditions
 import barter.barter_it_api.domain.Item
-import org.springframework.util.Base64Utils
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION
 import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 
@@ -26,7 +24,6 @@ class ItemIT extends IntegrationSpec {
 
         when:
             def response = mvc.perform(post("/items")
-                    .header(AUTHORIZATION, "Basic ${credentials()}")
                     .accept(APPLICATION_JSON)
                     .contentType(APPLICATION_JSON)
                     .content(request)
@@ -42,9 +39,5 @@ class ItemIT extends IntegrationSpec {
             result.count == 1
             result.condition == Conditions.GOOD
             result.mark == "Audi"
-    }
-
-    private String credentials() {
-        return Base64Utils.encodeToString("$username:$password".getBytes())
     }
 }

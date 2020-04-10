@@ -38,10 +38,11 @@ class JwtTokenProvider(
     }
 
     fun resolveToken(request: HttpServletRequest): String? {
-        val bearerToken = request.getHeader("Authorization")
-        return if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            bearerToken.substring(7)
-        } else null
+        request.getHeader("Authorization").let {
+            return if (it != null && it.startsWith("Bearer ")) {
+                it.substring(7)
+            } else null
+        }
     }
 
     fun validateToken(token: String): Boolean {
@@ -66,8 +67,8 @@ class JwtTokenProvider(
     }
 
     fun getAuthenticationByToken(token: String): UsernamePasswordAuthenticationToken {
-        val userDetails = userDetails.loadUserByUsername(getEmail(token))
-
-        return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
+        userDetails.loadUserByUsername(getEmail(token)).let {
+            return UsernamePasswordAuthenticationToken(it, "", it.authorities)
+        }
     }
 }

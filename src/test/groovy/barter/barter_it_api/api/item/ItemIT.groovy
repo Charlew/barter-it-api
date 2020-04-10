@@ -1,13 +1,15 @@
 package barter.barter_it_api.api.item
 
 import barter.barter_it_api.api.IntegrationSpec
-import barter.barter_it_api.domain.Categories
-import barter.barter_it_api.domain.Conditions
-import barter.barter_it_api.domain.Item
+import barter.barter_it_api.domain.item.Categories
+import barter.barter_it_api.domain.item.Conditions
+import barter.barter_it_api.domain.item.Item
+import org.springframework.security.test.context.support.WithMockUser
 
 import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 
+@WithMockUser
 class ItemIT extends IntegrationSpec {
 
     def 'should create valid item'() {

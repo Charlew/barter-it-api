@@ -1,9 +1,9 @@
 package barter.barter_it_api.api.item
 
 import barter.barter_it_api.api.Validations
-import barter.barter_it_api.domain.Item
-import barter.barter_it_api.domain.ItemFacade
-import barter.barter_it_api.domain.ItemRequest
+import barter.barter_it_api.domain.item.Item
+import barter.barter_it_api.domain.item.ItemFacade
+import barter.barter_it_api.domain.item.ItemRequest
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*

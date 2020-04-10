@@ -1,0 +1,4 @@
+security:
+  token:
+    secret-key: fga085cqmcyq014
+    validity: 3600000

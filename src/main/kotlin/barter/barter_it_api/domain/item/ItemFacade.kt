@@ -1,6 +1,6 @@
-package barter.barter_it_api.domain
+package barter.barter_it_api.domain.item
 
-import barter.barter_it_api.infrastructure.ItemRepository
+import barter.barter_it_api.infrastructure.item.ItemRepository
 import org.springframework.stereotype.Service
 
 @Service

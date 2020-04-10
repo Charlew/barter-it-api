@@ -42,9 +42,6 @@ dependencies {
 	testImplementation("org.spockframework:spock-spring:1.3-groovy-2.5")
 	testImplementation("org.testcontainers:spock:1.11.4")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	testImplementation("org.springframework.boot:spring-boot-starter-test") {
-		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-	}
 }
 
 tasks.withType<Test> {

@@ -1,4 +1,4 @@
-package barter.barter_it_api.domain
+package barter.barter_it_api.domain.item
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document

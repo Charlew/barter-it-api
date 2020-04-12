@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*
 
 @Validated
 @RestController
+@CrossOrigin(origins = ["localhost:3000", "barter-it-web.herokuapp.com"])
 @RequestMapping("/items")
 class ItemEndpoint(private val facade: ItemFacade,
                    private val validations: Validations) {

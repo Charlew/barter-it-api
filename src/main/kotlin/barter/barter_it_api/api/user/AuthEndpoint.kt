@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @Validated
-@CrossOrigin(origins = ["http://localhost:3000", "http://barter-it-web.herokuapp.com"])
+@CrossOrigin(origins = ["*"])
 @RestController
 class AuthEndpoint(
         private val authService: AuthService,

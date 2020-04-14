@@ -14,7 +14,13 @@ data class User(
         val email: String,
 
         val password: String
-)
+) {
+    fun toUserLoginResponse(token: String) = UserLoginResponse(
+            token = token,
+            id = id,
+            email = email
+    )
+}
 
 data class UserAuthRequest (
         @get:NotBlank(message = "required")
@@ -28,4 +34,10 @@ data class UserAuthRequest (
             password = password
     )
 }
+
+data class UserLoginResponse(
+        val token: String,
+        val id: String?,
+        val email: String
+)
 

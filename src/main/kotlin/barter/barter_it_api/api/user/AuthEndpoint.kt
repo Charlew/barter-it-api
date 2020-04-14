@@ -3,6 +3,7 @@ package barter.barter_it_api.api.user
 import barter.barter_it_api.api.Validations
 import barter.barter_it_api.domain.user.AuthService
 import barter.barter_it_api.domain.user.UserAuthRequest
+import barter.barter_it_api.domain.user.UserLoginResponse
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.PostMapping
@@ -17,7 +18,7 @@ class AuthEndpoint(
         private val validations: Validations
 ) {
     @PostMapping("login")
-    fun login(@RequestBody userAuthRequest: UserAuthRequest): String? {
+    fun login(@RequestBody userAuthRequest: UserAuthRequest): UserLoginResponse {
         validations.validate(userAuthRequest)
 
         return authService.login(userAuthRequest.email, userAuthRequest.password)

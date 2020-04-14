@@ -14,13 +14,14 @@ class AuthService(
         private val authenticationManager: AuthenticationManager,
         private val userRepository: UserRepository
 ) {
-    fun login(email: String, password: String): String? {
-        return try {
-            authenticationManager.authenticate(UsernamePasswordAuthenticationToken(email, password))
-            jwtTokenProvider.createToken(email, password)
-        } catch (ex: AuthenticationException) {
-            throw ValidationException("Bad credentials")
-        }
+    fun login(email: String, password: String): UserLoginResponse {
+            return try {
+                authenticationManager.authenticate(UsernamePasswordAuthenticationToken(email, password))
+                val token = jwtTokenProvider.createToken(email, password)
+                userRepository.findByEmail(email)!!.toUserLoginResponse(token)
+            } catch (ex: AuthenticationException) {
+                throw ValidationException("Bad credentials")
+            }
     }
 
     fun register(userAuthRequest: UserAuthRequest): String? {

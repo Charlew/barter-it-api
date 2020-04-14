@@ -15,14 +15,9 @@ class UserIT extends IntegrationSpec {
                     .andExpect(status().isForbidden())
     }
 
-    def "should perform login request and authenticate user"() {
+    def 'should perform login request and authenticate user'() {
         given:
-            def userLoginRequest = """
-                                    {
-                                        "email": "tomasz.adamek@example.com",
-                                        "password": "dummy"
-                                    }
-                                    """
+            def userLoginRequest = authRequest('tomasz.adamek@example.com', 'dummy')
         when:
            def response = mvc.perform(post("/login")
                     .content(userLoginRequest)
@@ -32,5 +27,56 @@ class UserIT extends IntegrationSpec {
         then: 'expecting token'
             response.status == 200
             response != null
+    }
+
+    def 'should not authenticate non existing user'() {
+        given:
+            def userLoginRequest = authRequest('test', 'test')
+        when:
+            def response = mvc.perform(post("/login")
+                    .content(userLoginRequest)
+                    .accept(APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
+            ).andReturn().response
+        then:
+            response.status == 400
+            response.contentAsString == '{"codes":["Bad credentials"]}'
+    }
+
+    def 'should register new user'() {
+        given:
+            def userRegistrationRequest = authRequest('newUser', 'newPassword')
+        when:
+            def response = mvc.perform(post("/register")
+                    .content(userRegistrationRequest)
+                    .accept(APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
+            ).andReturn().response
+        then:
+            response.status == 200
+            response.contentAsString == 'User: newUser registered'
+    }
+
+    def 'should not perform user registration when user has been registered'() {
+        given:
+            def userRegistrationRequest = authRequest('tomasz.adamek@example.com', 'password')
+        when:
+            def response = mvc.perform(post("/register")
+                    .content(userRegistrationRequest)
+                    .accept(APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
+            ).andReturn().response
+        then:
+            response.status == 400
+            response.contentAsString == '{"codes":["User: tomasz.adamek@example.com already exists"]}'
+    }
+
+    def authRequest(String email, String password) {
+        return """
+                    {
+                        "email": "$email",
+                        "password": "$password"
+                    }
+                """
     }
 }

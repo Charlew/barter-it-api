@@ -16,7 +16,7 @@ data class User(
         val password: String
 )
 
-data class UserLoginRequest (
+data class UserAuthRequest (
         @get:NotBlank(message = "required")
         val email: String,
 

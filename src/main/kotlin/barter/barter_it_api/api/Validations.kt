@@ -26,7 +26,8 @@ class Validations {
     }
 }
 
-class ValidationException private constructor(var errors: List<String>) : RuntimeException() {
+class ValidationException(var errors: List<String>) : RuntimeException() {
+    constructor(error: String) : this(listOf(error))
 
     companion object {
         fun of(errors: List<String>): ValidationException = ValidationException(errors)

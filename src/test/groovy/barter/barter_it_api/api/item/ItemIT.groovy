@@ -8,6 +8,7 @@ import org.springframework.security.test.context.support.WithMockUser
 
 import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 
 @WithMockUser
 class ItemIT extends IntegrationSpec {
@@ -41,5 +42,18 @@ class ItemIT extends IntegrationSpec {
             result.count == 1
             result.condition == Conditions.GOOD
             result.mark == "Audi"
+    }
+
+    def 'should not get item that does not exist'() {
+        given:
+            def itemId = UUID.randomUUID().toString()
+        when:
+            def response = mvc.perform(get("/items/$itemId")
+                    .accept(APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
+            ).andReturn().response
+        then:
+            response.status == 400
+            response.contentAsString == '{"codes":["Item does not exist"]}'
     }
 }

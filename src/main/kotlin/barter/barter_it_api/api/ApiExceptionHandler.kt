@@ -19,11 +19,9 @@ class ApiExceptionHandler {
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ValidationException::class)
     fun onValidationException(exception: ValidationException): Problem {
-        val codes = exception.errors
-
-        logger.error("Validation error returned with body: {}", codes)
-
-        return Problem(codes)
+        exception.errors.let {
+            return Problem(it)
+        }
     }
 }
 

@@ -2,3 +2,5 @@ security:
   token:
     secret-key: fga085cqmcyq014
     validity: 3600000
+  cors:
+    allowedOrigins: http://localhost:3000,http://barter-it-web.herokuapp.com,localhost:3000

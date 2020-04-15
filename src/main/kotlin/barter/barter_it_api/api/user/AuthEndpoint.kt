@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @Validated
-@CrossOrigin(origins = ["*"])
 @RestController
 class AuthEndpoint(
         private val authService: AuthService,

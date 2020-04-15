@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*
 
 @Validated
 @RestController
-@CrossOrigin(origins = ["*"])
 @RequestMapping("/items")
 class ItemEndpoint(private val facade: ItemFacade,
                    private val validations: Validations) {

@@ -2,12 +2,15 @@ package barter.barter_it_api.infrastructure
 
 import barter.barter_it_api.domain.item.Categories.*
 import barter.barter_it_api.domain.item.Conditions
+import barter.barter_it_api.domain.item.Conditions.GOOD
 import barter.barter_it_api.domain.item.Item
+import barter.barter_it_api.domain.item.Status.*
 import barter.barter_it_api.domain.user.User
 import barter.barter_it_api.infrastructure.item.ItemRepository
 import barter.barter_it_api.infrastructure.user.UserRepository
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Component
+import java.util.*
 import javax.annotation.PostConstruct
 
 @Component
@@ -37,11 +40,15 @@ class DataLoader(
                 .map {
                     itemRepository.save(Item(
                             name = it.name,
+                            userId = it.userId,
                             description = it.description,
                             category = it.category,
                             count = it.count,
                             mark = it.mark,
-                            condition = it.condition))
+                            condition = it.condition,
+                            proposals = it.proposals,
+                            status = it.status)
+                    )
                 }
                 .forEach { println(it) }
     }
@@ -55,10 +62,49 @@ class DataLoader(
 
     private fun sampleItems(): List<Item> {
         return listOf(
-                Item(name = "Audi", description = "Super auto", category = AUTOMOTIVE, count = 1, mark = "Audi", condition = Conditions.GOOD),
-                Item(name = "Pralka", description = "Niezawodna", category = HOUSEHOLD, count = 2, mark = "Beko", condition = Conditions.DAMAGED),
-                Item(name = "Krzesło", description = "Solidne", category = FURNITURE, count = 4, mark = "Ikea", condition = Conditions.VERY_GOOD),
-                Item(name = "Zegarek", description = "Elegancki", category = JEWELRY_AND_WATCHES, count = 3, mark = "Rolex", condition = Conditions.GOOD)
+                Item(
+                        name = "Audi",
+                        userId = UUID.randomUUID().toString(),
+                        description = "Super auto",
+                        category = AUTOMOTIVE,
+                        count = 1, mark = "Audi",
+                        condition = GOOD,
+                        proposals = null,
+                        status = PENDING
+                ),
+                Item(
+                        name = "Pralka",
+                        userId = UUID.randomUUID().toString(),
+                        description = "Niezawodna",
+                        category = HOUSEHOLD,
+                        count = 2,
+                        mark = "Beko",
+                        condition = Conditions.DAMAGED,
+                        proposals = null,
+                        status = ACCEPTED
+                ),
+                Item(
+                        name = "Krzesło",
+                        userId = UUID.randomUUID().toString(),
+                        description = "Solidne",
+                        category = FURNITURE,
+                        count = 4,
+                        mark = "Ikea",
+                        condition = Conditions.VERY_GOOD,
+                        proposals = null,
+                        status = REJECTED
+                ),
+                Item(
+                        name = "Zegarek",
+                        userId = UUID.randomUUID().toString(),
+                        description = "Elegancki",
+                        category = JEWELRY_AND_WATCHES,
+                        count = 3,
+                        mark = "Rolex",
+                        condition = GOOD,
+                        proposals = null,
+                        status = PENDING
+                )
         )
     }
 }

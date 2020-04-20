@@ -4,7 +4,10 @@ import barter.barter_it_api.api.IntegrationSpec
 import barter.barter_it_api.domain.item.Categories
 import barter.barter_it_api.domain.item.Conditions
 import barter.barter_it_api.domain.item.Item
+import barter.barter_it_api.domain.item.Status
 import org.springframework.security.test.context.support.WithMockUser
+
+import java.time.LocalDateTime
 
 import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -21,10 +24,21 @@ class ItemIT extends IntegrationSpec {
                               "category": "AUTOMOTIVE",
                               "condition": "GOOD",
                               "mark": "Audi",
-                              "count": 1
+                              "count": 1,
+                              "status": "PENDING",
+                              "proposals": [
+                                                    {
+                                                      "name": "Audi - wymienie",
+                                                      "description": "Igla",
+                                                      "category": "AUTOMOTIVE",
+                                                      "condition": "GOOD",
+                                                      "mark": "Audi",
+                                                      "count": 1,
+                                                      "status": "PENDING"
+                                                      }
+                                            ]
                              }
                              """
-
         when:
             def response = mvc.perform(post("/items")
                     .accept(APPLICATION_JSON)
@@ -42,6 +56,8 @@ class ItemIT extends IntegrationSpec {
             result.count == 1
             result.condition == Conditions.GOOD
             result.mark == "Audi"
+            result.status == Status.PENDING
+            result.proposals.size() == 1
     }
 
     def 'should not get item that does not exist'() {

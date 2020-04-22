@@ -47,7 +47,8 @@ class DataLoader(
                             mark = it.mark,
                             condition = it.condition,
                             proposals = it.proposals,
-                            status = it.status)
+                            status = it.status,
+                            imageIds = it.imageIds)
                     )
                 }
                 .forEach { println(it) }
@@ -70,7 +71,8 @@ class DataLoader(
                         count = 1, mark = "Audi",
                         condition = GOOD,
                         proposals = null,
-                        status = PENDING
+                        status = PENDING,
+                        imageIds = null
                 ),
                 Item(
                         name = "Pralka",
@@ -81,7 +83,8 @@ class DataLoader(
                         mark = "Beko",
                         condition = Conditions.DAMAGED,
                         proposals = null,
-                        status = ACCEPTED
+                        status = ACCEPTED,
+                        imageIds = null
                 ),
                 Item(
                         name = "Krzesło",
@@ -92,7 +95,8 @@ class DataLoader(
                         mark = "Ikea",
                         condition = Conditions.VERY_GOOD,
                         proposals = null,
-                        status = REJECTED
+                        status = REJECTED,
+                        imageIds = null
                 ),
                 Item(
                         name = "Zegarek",
@@ -103,7 +107,8 @@ class DataLoader(
                         mark = "Rolex",
                         condition = GOOD,
                         proposals = null,
-                        status = PENDING
+                        status = PENDING,
+                        imageIds = null
                 )
         )
     }

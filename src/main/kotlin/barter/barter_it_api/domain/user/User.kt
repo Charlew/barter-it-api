@@ -39,4 +39,3 @@ fun User.toUserLoginResponse(token: String) = UserLoginResponse(
         id = this.id,
         email = this.email
 )
-

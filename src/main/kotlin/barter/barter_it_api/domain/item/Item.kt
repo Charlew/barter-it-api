@@ -3,7 +3,6 @@ package barter.barter_it_api.domain.item
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
-import java.util.*
 import javax.validation.constraints.*
 
 @Document
@@ -17,7 +16,9 @@ data class Item(@Id val id: String? = null,
                 val createdAt: LocalDateTime = LocalDateTime.now(),
                 val count: Int? = 1,
                 val status: Status,
-                val proposals: List<Item>?)
+                val proposals: List<Item>?,
+                val imageIds: List<String>?
+)
 
 data class ItemRequest(
         @get:NotBlank(message = "notBlank")
@@ -40,7 +41,9 @@ data class ItemRequest(
 
         val status: Status,
 
-        val proposals: List<Item>?)
+        val proposals: List<Item>?,
+
+        val imageIds: List<String>?)
 
 enum class Categories {
     AUTOMOTIVE,
@@ -71,5 +74,6 @@ fun ItemRequest.toItem() = Item(
         mark = this.mark,
         count = this.count,
         status = this.status,
-        proposals = this.proposals
+        proposals = this.proposals,
+        imageIds = this.imageIds
 )

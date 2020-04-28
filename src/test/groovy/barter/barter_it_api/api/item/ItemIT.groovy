@@ -26,7 +26,7 @@ class ItemIT extends IntegrationSpec {
                              """
 
         when:
-            def response = mvc.perform(post("/items")
+            def response = mvc.perform(post("/items/create")
                     .accept(APPLICATION_JSON)
                     .contentType(APPLICATION_JSON)
                     .content(request)

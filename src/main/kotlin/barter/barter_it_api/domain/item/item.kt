@@ -13,11 +13,11 @@ data class Item(@Id val id: String? = null,
                 val category: Categories?,
                 val condition: Conditions?,
                 val mark: String?,
-                val createdAt: LocalDateTime = LocalDateTime.now(),
+                val createdAt: LocalDateTime? = LocalDateTime.now(),
                 val count: Int? = 1,
-                val status: Status,
-                val proposals: List<Item>?,
-                val imageIds: List<String>?
+                val imageIds: List<String>?,
+                val proposals: MutableList<Proposal>?,
+                val idsOfItemsProposedInOtherItems: List<String>?
 )
 
 data class ItemRequest(
@@ -39,11 +39,20 @@ data class ItemRequest(
         @get:Min(value = 1, message = "tooSmall")
         val count: Int? = 1,
 
-        val status: Status,
+        val imageIds: List<String>?,
 
-        val proposals: List<Item>?,
+        val proposals: MutableList<Proposal>?,
 
-        val imageIds: List<String>?)
+        val proposedInOthersList: List<String>?
+)
+
+data class Proposal(
+        @get:NotNull(message = "required")
+        var status: Status,
+
+        @get:NotNull(message = "required")
+        val item: Item
+)
 
 enum class Categories {
     AUTOMOTIVE,
@@ -61,8 +70,8 @@ enum class Conditions {
 
 enum class Status {
     PENDING,
-    ACCEPTED,
-    REJECTED
+    REJECTED,
+    ACCEPTED
 }
 
 fun ItemRequest.toItem() = Item(
@@ -73,7 +82,7 @@ fun ItemRequest.toItem() = Item(
         condition = this.condition,
         mark = this.mark,
         count = this.count,
-        status = this.status,
+        imageIds = this.imageIds,
         proposals = this.proposals,
-        imageIds = this.imageIds
+        idsOfItemsProposedInOtherItems = this.proposedInOthersList
 )

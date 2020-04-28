@@ -2,9 +2,7 @@ package barter.barter_it_api.infrastructure
 
 import barter.barter_it_api.domain.item.Categories.*
 import barter.barter_it_api.domain.item.Conditions
-import barter.barter_it_api.domain.item.Conditions.GOOD
 import barter.barter_it_api.domain.item.Item
-import barter.barter_it_api.domain.item.Status.*
 import barter.barter_it_api.domain.user.User
 import barter.barter_it_api.infrastructure.item.ItemRepository
 import barter.barter_it_api.infrastructure.user.UserRepository
@@ -46,9 +44,10 @@ class DataLoader(
                             count = it.count,
                             mark = it.mark,
                             condition = it.condition,
+                            imageIds = it.imageIds,
                             proposals = it.proposals,
-                            status = it.status,
-                            imageIds = it.imageIds)
+                            idsOfItemsProposedInOtherItems = it.idsOfItemsProposedInOtherItems
+                    )
                     )
                 }
                 .forEach { println(it) }
@@ -69,10 +68,10 @@ class DataLoader(
                         description = "Super auto",
                         category = AUTOMOTIVE,
                         count = 1, mark = "Audi",
-                        condition = GOOD,
+                        condition = Conditions.GOOD,
+                        imageIds = null,
                         proposals = null,
-                        status = PENDING,
-                        imageIds = null
+                        idsOfItemsProposedInOtherItems = null
                 ),
                 Item(
                         name = "Pralka",
@@ -82,9 +81,9 @@ class DataLoader(
                         count = 2,
                         mark = "Beko",
                         condition = Conditions.DAMAGED,
+                        imageIds = null,
                         proposals = null,
-                        status = ACCEPTED,
-                        imageIds = null
+                        idsOfItemsProposedInOtherItems = null
                 ),
                 Item(
                         name = "Krzesło",
@@ -94,9 +93,9 @@ class DataLoader(
                         count = 4,
                         mark = "Ikea",
                         condition = Conditions.VERY_GOOD,
+                        imageIds = null,
                         proposals = null,
-                        status = REJECTED,
-                        imageIds = null
+                        idsOfItemsProposedInOtherItems = null
                 ),
                 Item(
                         name = "Zegarek",
@@ -105,10 +104,10 @@ class DataLoader(
                         category = JEWELRY_AND_WATCHES,
                         count = 3,
                         mark = "Rolex",
-                        condition = GOOD,
+                        condition = Conditions.GOOD,
+                        imageIds = null,
                         proposals = null,
-                        status = PENDING,
-                        imageIds = null
+                        idsOfItemsProposedInOtherItems = null
                 )
         )
     }

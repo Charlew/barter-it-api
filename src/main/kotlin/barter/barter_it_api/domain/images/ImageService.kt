@@ -15,7 +15,7 @@ class ImageService(private val repository: ImageRepository) {
     }
 
     fun removeImage(id: String) {
-            repository.delete(id)
+        repository.delete(id)
     }
 }
 

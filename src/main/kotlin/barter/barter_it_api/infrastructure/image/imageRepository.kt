@@ -6,10 +6,25 @@ import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.gridfs.GridFsOperations
 import org.springframework.data.mongodb.gridfs.GridFsTemplate
+import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.stereotype.Repository
 import org.springframework.web.multipart.MultipartFile
 import java.io.BufferedInputStream
 import java.io.InputStream
 import java.util.*
+
+@Repository
+interface ImageRepository : MongoRepository<Image, String>, CustomImageRepository
+
+interface CustomImageRepository {
+
+    fun store(file: MultipartFile): String?
+    fun delete(id: String?)
+    fun find(id: String?): GridFSFile
+    fun loadResource(id: String?): InputStream?
+}
+
+class Image
 
 class CustomImageRepositoryImpl(
         private val gridFsTemplate: GridFsTemplate,

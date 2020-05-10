@@ -6,6 +6,7 @@ import barter.barter_it_api.domain.item.Conditions
 import barter.barter_it_api.domain.item.Item
 import org.springframework.security.test.context.support.WithMockUser
 
+import static barter.barter_it_api.domain.item.Categories.*
 import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -15,15 +16,7 @@ class ItemIT extends IntegrationSpec {
 
     def 'should create valid item'() {
         given:
-            def request = """{
-                              "name": "Audi - wymienie",
-                              "description": "Igla",
-                              "category": "AUTOMOTIVE",
-                              "condition": "GOOD",
-                              "mark": "Audi",
-                              "count": 1
-                             }
-                             """
+            def request = itemRequest()
 
         when:
             def response = mvc.perform(post("/items/create")
@@ -38,7 +31,7 @@ class ItemIT extends IntegrationSpec {
 
             result.name == 'Audi - wymienie'
             result.description == 'Igla'
-            result.category == Categories.AUTOMOTIVE
+            result.category == AUTOMOTIVE
             result.count == 1
             result.condition == Conditions.GOOD
             result.mark == "Audi"
@@ -55,5 +48,53 @@ class ItemIT extends IntegrationSpec {
         then:
             response.status == 400
             response.contentAsString == '{"codes":["Item does not exist"]}'
+    }
+
+    def 'should get items by category'() {
+        given:
+            def automotiveItem = itemRequest(AUTOMOTIVE)
+
+        and:
+            def householdItem = itemRequest(HOUSEHOLD)
+
+        and:
+            mvc.perform(post("/items/create")
+                .accept(APPLICATION_JSON)
+                .contentType(APPLICATION_JSON)
+                .content(automotiveItem)
+            ).andReturn().response
+
+        and:
+            mvc.perform(post("/items/create")
+                .accept(APPLICATION_JSON)
+                .contentType(APPLICATION_JSON)
+                .content(householdItem)
+            ).andReturn().response
+
+        when:
+            def response = mvc.perform(get("/items?category=automotive")
+                .accept(APPLICATION_JSON)
+                .contentType(APPLICATION_JSON)
+            ).andReturn().response
+
+        and:
+            def automotiveItems = objectMapper.readValue(response.getContentAsString(), Iterable.class)
+
+        then:
+            automotiveItems.size() == 1
+    }
+
+    private static String itemRequest(Categories category = AUTOMOTIVE) {
+        def categoryName = category.name()
+
+        """{
+          "name": "Audi - wymienie",
+          "description": "Igla",
+          "category": "$categoryName",
+          "condition": "GOOD",
+          "mark": "Audi",
+          "count": 1
+         }
+         """
     }
 }

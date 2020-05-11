@@ -1,6 +1,16 @@
 language: java
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t barter-it/api .
 
-jdk:
-  - openjdk13
+script:
+  - ./gradlew clean build
 
-install: ./gradlew clean build
+after_success:
+  - docker tag barter-it/api registry.heroku.com/$HEROKU_API_NAME/web
+  - docker push registry.heroku.com/$HEROKU_API_NAME/web
+  - ( echo "$HEROKU_API_KEY") | heroku login -i
+  - heroku container:login
+  - heroku container:release web --app $HEROKU_API_NAME

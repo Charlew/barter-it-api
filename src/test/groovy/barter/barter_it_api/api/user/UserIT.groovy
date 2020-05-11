@@ -1,12 +1,14 @@
 package barter.barter_it_api.api.user
 
 import barter.barter_it_api.api.IntegrationSpec
+import org.junit.Ignore
 
 import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+@Ignore("until testcontainers is repaired")
 class UserIT extends IntegrationSpec {
 
     def 'should not allow access to unauthenticated users'() {

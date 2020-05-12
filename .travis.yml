@@ -1,16 +1,16 @@
 language: java
 sudo: required
-services:
-  - docker
-before_install:
-  - docker build -t barter-it/api .
-
-script:
-  - ./gradlew clean build
-
-after_success:
-  - docker tag barter-it/api registry.heroku.com/$HEROKU_API_NAME/web
-  - docker push registry.heroku.com/$HEROKU_API_NAME/web
-  - ( echo "$HEROKU_API_KEY") | heroku login -i
-  - heroku container:login
-  - heroku container:release web --app $HEROKU_API_NAME
+jobs:
+  include:
+    - stage: review
+      script:
+        - echo 'Running tests...'
+        - ./gradlew clean build
+    - stage: deploy
+      script:
+        - bash deploy-scripts/deploy.sh
+stages:
+  - name: review
+    if: type = pull_request
+  - name: deploy
+    if: type = push AND branch = master

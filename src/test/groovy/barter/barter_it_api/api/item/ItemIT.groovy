@@ -4,14 +4,12 @@ import barter.barter_it_api.api.IntegrationSpec
 import barter.barter_it_api.domain.item.Categories
 import barter.barter_it_api.domain.item.Conditions
 import barter.barter_it_api.domain.item.Item
-import org.junit.Ignore
 import org.springframework.security.test.context.support.WithMockUser
 
 import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 
-@Ignore("until testcontainers is repaired")
 @WithMockUser
 class ItemIT extends IntegrationSpec {
 

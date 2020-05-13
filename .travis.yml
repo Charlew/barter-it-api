@@ -5,7 +5,7 @@ jobs:
     - stage: review
       script:
         - echo 'Running tests...'
-        - ./gradlew clean build
+        - gradle test
     - stage: deploy
       script:
         - bash deploy-scripts/deploy.sh

@@ -1,6 +1,9 @@
 package barter.barter_it_api.api.user
 
 import barter.barter_it_api.api.IntegrationSpec
+import barter.barter_it_api.domain.user.AuthService
+import barter.barter_it_api.domain.user.UserAuthRequest
+import org.springframework.beans.factory.annotation.Autowired
 
 import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -8,6 +11,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 class UserIT extends IntegrationSpec {
+
+    @Autowired
+    AuthService authService
 
     def 'should not allow access to unauthenticated users'() {
         expect:
@@ -17,13 +23,18 @@ class UserIT extends IntegrationSpec {
 
     def 'should perform login request and authenticate user'() {
         given:
-            def userLoginRequest = authRequest('tomasz.adamek@example.com', 'dummy')
+            authService.register(new UserAuthRequest("email@example.com", "password123"))
+
+        and:
+            def userLoginRequest = authRequest('email@example.com', 'password123')
+
         when:
            def response = mvc.perform(post("/login")
                     .content(userLoginRequest)
                     .accept(APPLICATION_JSON)
                     .contentType(APPLICATION_JSON)
             ).andReturn().response
+
         then: 'expecting token'
             response.status == 200
             response != null
@@ -59,16 +70,21 @@ class UserIT extends IntegrationSpec {
 
     def 'should not perform user registration when user has been registered'() {
         given:
-            def userRegistrationRequest = authRequest('tomasz.adamek@example.com', 'password')
+            authService.register(new UserAuthRequest("email@example.com", "password123"))
+
+        and:
+            def userRegistrationRequest = authRequest('email@example.com', 'password123')
+
         when:
             def response = mvc.perform(post("/register")
                     .content(userRegistrationRequest)
                     .accept(APPLICATION_JSON)
                     .contentType(APPLICATION_JSON)
             ).andReturn().response
+
         then:
             response.status == 400
-            response.contentAsString == '{"codes":["User: tomasz.adamek@example.com already exists"]}'
+            response.contentAsString == '{"codes":["User: email@example.com already exists"]}'
     }
 
     def authRequest(String email, String password) {

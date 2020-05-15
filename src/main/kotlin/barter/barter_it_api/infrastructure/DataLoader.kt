@@ -6,12 +6,14 @@ import barter.barter_it_api.domain.item.Item
 import barter.barter_it_api.domain.user.User
 import barter.barter_it_api.infrastructure.item.ItemRepository
 import barter.barter_it_api.infrastructure.user.UserRepository
+import org.springframework.context.annotation.Profile
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Component
 import java.util.*
 import javax.annotation.PostConstruct
 
 @Component
+@Profile("!test")
 class DataLoader(
         private val itemRepository: ItemRepository,
         private val userRepository: UserRepository,

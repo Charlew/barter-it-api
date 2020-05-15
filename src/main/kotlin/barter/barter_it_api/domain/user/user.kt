@@ -13,7 +13,7 @@ data class User(
         @Indexed(unique = true)
         val email: String,
 
-        val password: String
+        val encodedPassword: String
 )
 
 data class UserAuthRequest (
@@ -30,9 +30,9 @@ data class UserLoginResponse(
         val email: String
 )
 
-fun UserAuthRequest.toUser() = User(
+fun UserAuthRequest.toUser(encodedPassword: String) = User(
         email = this.email,
-        password = this.password)
+        encodedPassword = encodedPassword)
 
 fun User.toUserLoginResponse(token: String) = UserLoginResponse(
         token = token,

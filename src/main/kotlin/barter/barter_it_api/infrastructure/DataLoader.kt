@@ -28,7 +28,7 @@ class DataLoader(
                 .map {
                     userRepository.save(User(
                             email = it.email,
-                            password = bCryptPasswordEncoder.encode(it.password)
+                            encodedPassword = bCryptPasswordEncoder.encode(it.encodedPassword)
                     ))
                 }
                 .forEach { println(it) }
@@ -55,8 +55,8 @@ class DataLoader(
 
     private fun sampleUsers(): List<User> {
         return listOf(
-                User(email = "tomasz.adamek@example.com", password = "dummy"),
-                User(email = "andrzej.golota@example.com", password = "dummy")
+                User(email = "tomasz.adamek@example.com", encodedPassword = "dummy"),
+                User(email = "andrzej.golota@example.com", encodedPassword = "dummy")
         )
     }
 

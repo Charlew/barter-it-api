@@ -17,7 +17,7 @@ class StandardUserDetails(
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(email)
-                .password(user.password)
+                .password(user.encodedPassword)
                 .authorities("user")
                 .build()
     }

@@ -1,12 +1,24 @@
 package barter.barter_it_api.infrastructure.item
 
+import barter.barter_it_api.domain.item.Categories
 import barter.barter_it_api.domain.item.Item
-import org.springframework.data.mongodb.repository.MongoRepository
-import org.springframework.stereotype.Repository
-import java.util.*
+import org.springframework.data.mongodb.repository.Query
+import org.springframework.data.repository.Repository
+import java.util.Optional
 
-@Repository
-interface ItemRepository:MongoRepository<Item, String> {
+interface ItemRepository: Repository<Item, String> {
 
-    override fun findById(id: String): Optional<Item>
+    fun save(item: Item): Item
+
+    fun insert(item: Item): Item
+
+    fun findById(id: String): Optional<Item>
+
+    fun findAll(): MutableIterable<Item>
+
+    @Query("{ 'category' : ?0 }")
+    fun findByCategory(category: Categories): MutableIterable<Item>
+
+    fun deleteAll(): Void
+
 }

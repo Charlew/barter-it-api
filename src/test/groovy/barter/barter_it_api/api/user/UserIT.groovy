@@ -1,98 +1,75 @@
 package barter.barter_it_api.api.user
 
 import barter.barter_it_api.api.IntegrationSpec
+import barter.barter_it_api.api.Problem
 import barter.barter_it_api.domain.user.AuthService
-import barter.barter_it_api.domain.user.UserAuthRequest
+import barter.barter_it_api.domain.user.UserLoginResponse
 import org.springframework.beans.factory.annotation.Autowired
 
-import static org.springframework.http.MediaType.APPLICATION_JSON
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import static barter.barter_it_api.Fixtures.*
+import static org.springframework.http.HttpStatus.*
 
 class UserIT extends IntegrationSpec {
 
     @Autowired
     AuthService authService
 
-    def 'should not allow access to unauthenticated users'() {
-        expect:
-            mvc.perform(get("/items"))
-                    .andExpect(status().isForbidden())
-    }
-
     def 'should perform login request and authenticate user'() {
         given:
-            authService.register(new UserAuthRequest("email@example.com", "password123"))
+            authService.register(authRequest("email@example.com", "password123"))
 
         and:
-            def userLoginRequest = authRequest('email@example.com', 'password123')
+            def userLoginRequest = httpRequest(authRequest('email@example.com', 'password123'))
 
         when:
-           def response = mvc.perform(post("/login")
-                    .content(userLoginRequest)
-                    .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
-            ).andReturn().response
+            def response = http.postForEntity(url("login"), userLoginRequest, UserLoginResponse.class)
 
         then: 'expecting token'
-            response.status == 200
-            response != null
+            response.statusCode == OK
+            response.getBody().getEmail() == "email@example.com"
     }
 
     def 'should not authenticate non existing user'() {
         given:
-            def userLoginRequest = authRequest('test', 'test')
+            def userLoginRequest = httpRequest(authRequest('test', 'test'))
+
         when:
-            def response = mvc.perform(post("/login")
-                    .content(userLoginRequest)
-                    .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
-            ).andReturn().response
+            def response = http.postForEntity(url("login"), userLoginRequest, Problem.class)
+
         then:
-            response.status == 400
-            response.contentAsString == '{"codes":["Bad credentials"]}'
+            response.statusCode == BAD_REQUEST
+
+        and:
+            response.getBody().getCodes().contains("Bad credentials")
     }
 
     def 'should register new user'() {
         given:
-            def userRegistrationRequest = authRequest('newUser', 'newPassword')
+            def userRegistrationRequest = httpRequest(authRequest('newUser', 'newPassword'))
+
         when:
-            def response = mvc.perform(post("/register")
-                    .content(userRegistrationRequest)
-                    .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
-            ).andReturn().response
+            def response = http.postForEntity(url("register"), userRegistrationRequest, String.class)
+
         then:
-            response.status == 200
-            response.contentAsString == 'User: newUser registered'
+            response.statusCode == OK
+            response.body == 'User: newUser registered'
     }
 
     def 'should not perform user registration when user has been registered'() {
         given:
-            authService.register(new UserAuthRequest("email@example.com", "password123"))
+            authService.register(authRequest("email@example.com", "password123"))
 
         and:
-            def userRegistrationRequest = authRequest('email@example.com', 'password123')
+            def userRegistrationRequest = httpRequest(authRequest('email@example.com', 'password123'))
 
         when:
-            def response = mvc.perform(post("/register")
-                    .content(userRegistrationRequest)
-                    .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
-            ).andReturn().response
+            def response = http.postForEntity(url("register"), userRegistrationRequest, Problem.class)
 
         then:
-            response.status == 400
-            response.contentAsString == '{"codes":["User: email@example.com already exists"]}'
+            response.statusCode == BAD_REQUEST
+
+        and:
+            response.getBody().getCodes().contains("User: email@example.com already exists")
     }
 
-    def authRequest(String email, String password) {
-        return """
-                    {
-                        "email": "$email",
-                        "password": "$password"
-                    }
-                """
-    }
 }

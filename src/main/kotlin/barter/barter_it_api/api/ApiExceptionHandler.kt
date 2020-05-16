@@ -26,7 +26,7 @@ class ApiExceptionHandler {
 }
 
 @ApiModel(description = "RepeatableEntity returned in case of any errors")
-class Problem(
+data class Problem(
         @ApiModelProperty(notes = "Contains error codes specific for invoked operation")
         val codes: List<String>? = null
 )

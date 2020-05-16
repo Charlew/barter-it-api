@@ -8,7 +8,7 @@ import java.util.*
 import javax.validation.constraints.*
 
 @Document
-data class Item(@Id val id: String = UUID.randomUUID().toString(),
+data class Item(@Id val id: String,
                 val userId: String,
                 val name: String,
                 val description: String,
@@ -85,6 +85,7 @@ enum class Status {
 }
 
 fun ItemRequest.toItem() = Item(
+        id = UUID.randomUUID().toString(),
         name = this.name,
         userId = this.userId,
         description = this.description,

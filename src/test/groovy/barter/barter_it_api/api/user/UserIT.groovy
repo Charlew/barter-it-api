@@ -14,14 +14,6 @@ class UserIT extends IntegrationSpec {
     @Autowired
     AuthService authService
 
-    def 'should not allow access to unauthenticated users'() {
-        when:
-            def response = http.getForEntity(url("items"), Problem.class)
-
-        then:
-            response.statusCode == FORBIDDEN
-    }
-
     def 'should perform login request and authenticate user'() {
         given:
             authService.register(authRequest("email@example.com", "password123"))

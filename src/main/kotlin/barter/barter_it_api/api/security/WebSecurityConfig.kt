@@ -28,8 +28,8 @@ class WebSecurityConfig(
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/login/**").permitAll()
-                .antMatchers("/image/**", "/items/**").authenticated()
+                .antMatchers("/login/**", "/items/**").permitAll()
+                .antMatchers("/image/**", "/items/create", "/items/update").authenticated()
 
         http.apply(JwtTokenFilterApplier(jwtTokenProvider))
     }

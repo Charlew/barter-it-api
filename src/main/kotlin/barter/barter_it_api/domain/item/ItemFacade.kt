@@ -7,7 +7,13 @@ import org.springframework.stereotype.Service
 @Service
 class ItemFacade(private val repository: ItemRepository) {
 
-    fun getAllItems(): MutableIterable<Item> = repository.findAll()
+    fun getItems(category: String?): MutableIterable<Item> {
+        if (category != null) {
+            return repository.findByCategory(Categories.fromName(category.toUpperCase()))
+        }
+
+        return repository.findAll()
+    }
 
     fun getItemById(id: String): Item = findItemById(id)
 

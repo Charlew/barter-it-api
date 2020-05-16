@@ -16,7 +16,7 @@ class ItemEndpoint(private val facade: ItemFacade,
                    private val validations: Validations) {
 
     @GetMapping(produces = [APPLICATION_JSON_VALUE])
-    fun items(): MutableIterable<Item> = facade.getAllItems()
+    fun items(@RequestParam(required = false) category: String?): MutableIterable<Item> = facade.getItems(category)
 
     @GetMapping("/{id}", produces = [APPLICATION_JSON_VALUE])
     fun byId(@PathVariable(name = "id") id: String): Item = facade.getItemById(id)

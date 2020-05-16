@@ -23,22 +23,24 @@ data class Item(@Id val id: String? = null,
 
 data class ItemRequest(
         @get:NotBlank(message = "notBlank")
-        val name: String?,
+        val name: String,
 
-        val userId: String?,
+        @get:NotBlank(message = "notBlank")
+        val userId: String,
 
-        val description: String?,
+        @get:NotBlank(message = "notBlank")
+        val description: String,
 
         @get:NotNull(message = "required")
-        val category: Categories?,
+        val category: Categories,
 
         @get:NotNull(message = "required")
-        val condition: Conditions?,
+        val condition: Conditions,
 
         val mark: String?,
 
         @get:Min(value = 1, message = "tooSmall")
-        val count: Int? = 1,
+        val count: Int = 1,
 
         val imageIds: List<String>?,
 

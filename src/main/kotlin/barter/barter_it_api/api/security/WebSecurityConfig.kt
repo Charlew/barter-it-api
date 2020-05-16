@@ -28,14 +28,14 @@ class WebSecurityConfig(
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/login/**", "/items/**").permitAll()
+                .antMatchers("/login/**").permitAll()
                 .antMatchers("/image/**", "/items/create", "/items/update").authenticated()
 
         http.apply(JwtTokenFilterApplier(jwtTokenProvider))
     }
 
     override fun configure(web: WebSecurity) {
-        web.ignoring().antMatchers("/items/{id}")
+        web.ignoring().antMatchers("/items/{id}", "/items")
     }
 
     @Bean(name = [BeanIds.AUTHENTICATION_MANAGER])

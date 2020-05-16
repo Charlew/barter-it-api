@@ -1,8 +1,8 @@
 package barter.barter_it_api.domain.item
 
+import barter.barter_it_api.api.ValidationException
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
-import java.lang.IllegalArgumentException
 import java.time.LocalDateTime
 import javax.validation.constraints.*
 
@@ -64,7 +64,7 @@ enum class Categories {
 
     companion object {
         private val nameToValueMap = values().associateBy(Categories::name)
-        fun fromName(name: String) = nameToValueMap[name] ?: throw IllegalArgumentException("No predefined constant value for given category: $name")
+        fun fromName(name: String) = nameToValueMap[name] ?: throw ValidationException("No predefined constant value for given category: $name")
     }
 
 }

@@ -32,7 +32,7 @@ class ItemIT extends IntegrationSpec {
             response.getBody().name == 'Audi - wymienie'
             response.getBody().description == 'Igla'
             response.getBody().category == AUTOMOTIVE
-            response.getBody().count == 1
+            response.getBody().quantity == 1
             response.getBody().condition == Conditions.GOOD
             response.getBody().mark == "Audi"
     }

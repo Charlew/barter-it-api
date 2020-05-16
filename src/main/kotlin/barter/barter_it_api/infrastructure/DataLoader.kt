@@ -39,6 +39,7 @@ class DataLoader(
                 .stream()
                 .map {
                     itemRepository.save(Item(
+                            id = UUID.randomUUID().toString(),
                             name = it.name,
                             userId = it.userId,
                             description = it.description,
@@ -65,6 +66,7 @@ class DataLoader(
     private fun sampleItems(): List<Item> {
         return listOf(
                 Item(
+                        id = UUID.randomUUID().toString(),
                         name = "Audi",
                         userId = UUID.randomUUID().toString(),
                         description = "Super auto",
@@ -76,6 +78,7 @@ class DataLoader(
                         idsOfItemsProposedInOtherItems = null
                 ),
                 Item(
+                        id = UUID.randomUUID().toString(),
                         name = "Pralka",
                         userId = UUID.randomUUID().toString(),
                         description = "Niezawodna",
@@ -88,6 +91,7 @@ class DataLoader(
                         idsOfItemsProposedInOtherItems = null
                 ),
                 Item(
+                        id = UUID.randomUUID().toString(),
                         name = "Krzesło",
                         userId = UUID.randomUUID().toString(),
                         description = "Solidne",
@@ -100,6 +104,7 @@ class DataLoader(
                         idsOfItemsProposedInOtherItems = null
                 ),
                 Item(
+                        id = UUID.randomUUID().toString(),
                         name = "Zegarek",
                         userId = UUID.randomUUID().toString(),
                         description = "Elegancki",

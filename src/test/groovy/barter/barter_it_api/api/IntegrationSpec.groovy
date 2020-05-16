@@ -5,24 +5,23 @@ import barter.barter_it_api.infrastructure.item.ItemRepository
 import barter.barter_it_api.infrastructure.user.UserRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Import
+import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.web.servlet.MockMvc
 import spock.lang.Specification
 
 import org.springframework.test.context.ContextConfiguration
 
 @ContextConfiguration
-@AutoConfigureMockMvc
-@SpringBootTest
-@Import(BarterItApiApplication)
+@SpringBootTest(
+    classes = BarterItApiApplication,
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
+)
 @ActiveProfiles("test")
 abstract class IntegrationSpec extends Specification {
-
-    @Autowired
-    protected MockMvc mvc
 
     @Autowired
     ObjectMapper objectMapper
@@ -32,6 +31,12 @@ abstract class IntegrationSpec extends Specification {
 
     @Autowired
     ItemRepository itemRepository
+
+    @Autowired
+    TestRestTemplate http
+
+    @LocalServerPort
+    int port
 
     def setup() {
         cleanUpRepositories()
@@ -46,4 +51,14 @@ abstract class IntegrationSpec extends Specification {
         return objectMapper.writeValueAsString(object)
     }
 
+    HttpEntity<String> httpRequest(Object body) {
+        def json = mapToJson(body)
+        def httpHeaders = new HttpHeaders()
+        httpHeaders.set("Content-type", "application/json")
+        return new HttpEntity<>(json, httpHeaders)
+    }
+
+    String url(String endpoint) {
+        return "http://localhost:$port/$endpoint"
+    }
 }

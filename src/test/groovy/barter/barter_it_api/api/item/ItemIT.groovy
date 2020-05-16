@@ -1,100 +1,72 @@
 package barter.barter_it_api.api.item
 
 import barter.barter_it_api.api.IntegrationSpec
-import barter.barter_it_api.domain.item.Categories
+import barter.barter_it_api.api.Problem
 import barter.barter_it_api.domain.item.Conditions
 import barter.barter_it_api.domain.item.Item
+import barter.barter_it_api.domain.item.ItemFacade
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithMockUser
 
+import static barter.barter_it_api.Fixtures.*
 import static barter.barter_it_api.domain.item.Categories.*
-import static org.springframework.http.MediaType.APPLICATION_JSON
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.http.HttpStatus.*
 
 @WithMockUser
 class ItemIT extends IntegrationSpec {
 
+    @Autowired
+    ItemFacade itemFacade
+
     def 'should create valid item'() {
         given:
-            def request = itemRequest()
+            def itemRequest = httpRequest(itemRequest())
 
         when:
-            def response = mvc.perform(post("/items/create")
-                    .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
-                    .content(request)
-            ).andReturn().response
+            def response = http.postForEntity(url("items/create"), itemRequest, Item.class)
 
-            def result = objectMapper.readValue(response.getContentAsString(), Item)
         then:
-            response.status == 200
+            response.statusCode == OK
 
-            result.name == 'Audi - wymienie'
-            result.description == 'Igla'
-            result.category == AUTOMOTIVE
-            result.count == 1
-            result.condition == Conditions.GOOD
-            result.mark == "Audi"
+        and:
+            response.getBody().name == 'Audi - wymienie'
+            response.getBody().description == 'Igla'
+            response.getBody().category == AUTOMOTIVE
+            response.getBody().count == 1
+            response.getBody().condition == Conditions.GOOD
+            response.getBody().mark == "Audi"
     }
 
     def 'should not get item that does not exist'() {
         given:
             def itemId = UUID.randomUUID().toString()
+
         when:
-            def response = mvc.perform(get("/items/$itemId")
-                    .accept(APPLICATION_JSON)
-                    .contentType(APPLICATION_JSON)
-            ).andReturn().response
+            def response = http.getForEntity(url("items/$itemId"), Problem.class)
+
         then:
-            response.status == 400
-            response.contentAsString == '{"codes":["Item does not exist"]}'
+            response.statusCode == BAD_REQUEST
+
+        and:
+            response.body.getCodes().contains("Item does not exist")
     }
 
     def 'should get items by category'() {
         given:
-            def automotiveItem = itemRequest(AUTOMOTIVE)
+            itemFacade.create(itemRequest(AUTOMOTIVE))
 
         and:
-            def householdItem = itemRequest(HOUSEHOLD)
-
-        and:
-            mvc.perform(post("/items/create")
-                .accept(APPLICATION_JSON)
-                .contentType(APPLICATION_JSON)
-                .content(automotiveItem)
-            ).andReturn().response
-
-        and:
-            mvc.perform(post("/items/create")
-                .accept(APPLICATION_JSON)
-                .contentType(APPLICATION_JSON)
-                .content(householdItem)
-            ).andReturn().response
+            itemFacade.create(itemRequest(HOUSEHOLD))
 
         when:
-            def response = mvc.perform(get("/items?category=automotive")
-                .accept(APPLICATION_JSON)
-                .contentType(APPLICATION_JSON)
-            ).andReturn().response
-
-        and:
-            def automotiveItems = objectMapper.readValue(response.getContentAsString(), Iterable.class)
+            def response = http.getForEntity(url("items?category=automotive"), Item[].class)
 
         then:
-            automotiveItems.size() == 1
+            response.statusCode == OK
+
+        and:
+            response.getBody().size() == 1
+            response.getBody()[0].category == AUTOMOTIVE
     }
 
-    private static String itemRequest(Categories category = AUTOMOTIVE) {
-        def categoryName = category.name()
-
-        """{
-          "name": "Audi - wymienie",
-          "description": "Igla",
-          "category": "$categoryName",
-          "condition": "GOOD",
-          "mark": "Audi",
-          "count": 1
-         }
-         """
-    }
 }

@@ -1,9 +1,11 @@
 package barter.barter_it_api.domain.item
 
+import barter.barter_it_api.api.ValidationException
 import barter.barter_it_api.infrastructure.item.ItemRepository
 import spock.lang.Specification
 import spock.lang.Subject
 
+import static barter.barter_it_api.Fixtures.*
 import static barter.barter_it_api.domain.item.Categories.*
 
 class ItemFacadeSpec extends Specification {
@@ -46,52 +48,15 @@ class ItemFacadeSpec extends Specification {
             result[1].category == AUTOMOTIVE
     }
 
-    def 'should throw IllegalArgumentException when trying to get items from not existing category'() {
+    def 'should throw ValidationException when trying to get items from not existing category'() {
         when:
             facade.getItems("cars")
 
         then:
-            def exception = thrown(IllegalArgumentException)
+            def exception = thrown(ValidationException)
 
         and:
-            exception.message == "No predefined constant value for given category: CARS"
+            exception.errors[0] == "No predefined constant value for given category: CARS"
     }
 
-    static Item sampleItem(String id = "test-id1", Categories categories = AUTOMOTIVE) {
-        new Item(
-                id,
-                'test-user-id',
-                'auto',
-                'super',
-                categories,
-                Conditions.DAMAGED,
-                'Audi',
-                null,
-                1,
-                null,
-                proposals(),
-                null
-        )
-    }
-
-    static def itemProposed() {
-        new Item(
-                'test-id2',
-                'test-user-id',
-                'auto',
-                'extra',
-                AUTOMOTIVE,
-                Conditions.DAMAGED,
-                'BMW',
-                null,
-                1,
-                null,
-                null,
-                null
-        )
-    }
-
-    static def proposals() {
-        return List.of(new Proposal(Status.PENDING, itemProposed()))
-    }
 }

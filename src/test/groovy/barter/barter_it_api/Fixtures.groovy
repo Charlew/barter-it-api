@@ -56,7 +56,7 @@ class Fixtures {
 
     static ItemRequest itemRequest(Categories category = AUTOMOTIVE) {
         return new ItemRequest("Audi - wymienie",
-            null,
+            "123",
             "Igla",
             category,
             Conditions.GOOD,

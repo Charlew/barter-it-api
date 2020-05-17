@@ -26,6 +26,7 @@ class UserIT extends IntegrationSpec {
 
         then: 'expecting token'
             response.statusCode == OK
+            response.getBody().getTokenExpirationDate()
             response.getBody().getEmail() == "email@example.com"
     }
 

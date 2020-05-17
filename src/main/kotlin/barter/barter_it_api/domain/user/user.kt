@@ -3,6 +3,7 @@ package barter.barter_it_api.domain.user
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
+import java.time.LocalDateTime
 import javax.validation.constraints.NotBlank
 
 @Document
@@ -27,15 +28,17 @@ data class UserAuthRequest (
 data class UserLoginResponse(
         val token: String,
         val id: String?,
-        val email: String
+        val email: String,
+        val tokenExpirationDate: LocalDateTime
 )
 
 fun UserAuthRequest.toUser(encodedPassword: String) = User(
         email = this.email,
         encodedPassword = encodedPassword)
 
-fun User.toUserLoginResponse(token: String) = UserLoginResponse(
+fun User.toUserLoginResponse(token: String, tokenExpirationDate: LocalDateTime) = UserLoginResponse(
         token = token,
+        tokenExpirationDate = tokenExpirationDate,
         id = this.id,
         email = this.email
 )

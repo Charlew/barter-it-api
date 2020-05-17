@@ -20,7 +20,8 @@ class AuthService(
             return try {
                 authenticationManager.authenticate(UsernamePasswordAuthenticationToken(email, password))
                 val token = jwtTokenProvider.createToken(email, password)
-                userRepository.findByEmail(email)!!.toUserLoginResponse(token)
+                val tokenExpirationDate = jwtTokenProvider.getExpirationDate(token)
+                userRepository.findByEmail(email)!!.toUserLoginResponse(token, tokenExpirationDate)
             } catch (ex: AuthenticationException) {
                 throw ValidationException("Bad credentials")
             }

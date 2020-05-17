@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Component
 import java.time.Instant
+import java.time.LocalDateTime
 import java.util.*
 import javax.annotation.PostConstruct
 import javax.servlet.http.HttpServletRequest
@@ -71,4 +72,13 @@ class JwtTokenProvider(
             return UsernamePasswordAuthenticationToken(it, "", it.authorities)
         }
     }
+
+    fun getExpirationDate(token: String): LocalDateTime {
+        return Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .body
+                .expiration.toInstant().atZone(localClock()?.zone).toLocalDateTime()
+    }
+
 }

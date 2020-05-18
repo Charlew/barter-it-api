@@ -19,7 +19,7 @@ class AuthService(
     fun login(email: String, password: String): UserLoginResponse {
             return try {
                 authenticationManager.authenticate(UsernamePasswordAuthenticationToken(email, password))
-                val token = jwtTokenProvider.createToken(email, password)
+                val token = jwtTokenProvider.createToken(email)
                 val tokenExpirationDate = jwtTokenProvider.getExpirationDate(token)
                 userRepository.findByEmail(email)!!.toUserLoginResponse(token, tokenExpirationDate)
             } catch (ex: AuthenticationException) {
@@ -36,4 +36,6 @@ class AuthService(
             return "User: ${it.email} registered"
         }
     }
+
+    fun refreshToken(email: String): String = jwtTokenProvider.createToken(email)
 }

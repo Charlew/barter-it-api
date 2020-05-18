@@ -73,4 +73,20 @@ class UserIT extends IntegrationSpec {
             response.getBody().getCodes().contains("User: email@example.com already exists")
     }
 
+    def 'should refresh authentication token'() {
+        given:
+            authService.register(authRequest('email@example.com', 'password123'))
+            def userLoginRequest = httpRequest(authRequest('email@example.com', 'password123'))
+        when:
+            def response = http.postForEntity(url('login'), userLoginRequest, UserLoginResponse.class)
+            def token = response.body.token
+        and:
+            def freshToken = http.postForEntity(url('refresh'), null, String.class).body
+        then:
+            token instanceof String
+            freshToken instanceof String
+        and:
+            token != freshToken
+    }
+
 }

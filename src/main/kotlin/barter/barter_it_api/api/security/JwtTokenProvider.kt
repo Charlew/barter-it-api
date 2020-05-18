@@ -26,7 +26,7 @@ class JwtTokenProvider(
         secretKey = Base64.getEncoder().encodeToString(secretKey.toByteArray())
     }
 
-    fun createToken(email: String, password: String): String {
+    fun createToken(email: String): String {
         val now = Date.from(Instant.now(localClock()))
 
         return Jwts.builder()

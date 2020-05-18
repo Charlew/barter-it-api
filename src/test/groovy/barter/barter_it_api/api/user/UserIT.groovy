@@ -81,7 +81,7 @@ class UserIT extends IntegrationSpec {
             def response = http.postForEntity(url('login'), userLoginRequest, UserLoginResponse.class)
             def token = response.body.token
         and:
-            def freshToken = http.postForEntity(url('refresh'), null, String.class).body
+            def freshToken = http.getForEntity(url('refresh'), String.class).body
         then:
             token instanceof String
             freshToken instanceof String
@@ -89,4 +89,11 @@ class UserIT extends IntegrationSpec {
             token != freshToken
     }
 
+    def 'should not allow to refresh token when user is not authenticated'() {
+        when:
+            def response = http.getForEntity(url('refresh'), Problem.class)
+        then:
+            response.statusCode == BAD_REQUEST
+            response.body.codes == ['User must be authenticated']
+    }
 }

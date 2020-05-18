@@ -37,5 +37,10 @@ class AuthService(
         }
     }
 
-    fun refreshToken(email: String): String = jwtTokenProvider.createToken(email)
+    fun refreshToken(email: String?): String {
+        if (email == null) {
+            throw ValidationException("User must be authenticated")
+        }
+        return jwtTokenProvider.createToken(email)
+    }
 }

@@ -1,6 +1,7 @@
 package barter.barter_it_api.api.user
 
 import barter.barter_it_api.api.Validations
+import barter.barter_it_api.domain.user.AccessToken
 import barter.barter_it_api.domain.user.AuthService
 import barter.barter_it_api.domain.user.UserAuthRequest
 import barter.barter_it_api.domain.user.UserLoginResponse
@@ -32,5 +33,5 @@ class AuthEndpoint(
     }
 
     @GetMapping("refresh")
-    fun refreshToken(request: HttpServletRequest): String = authService.refreshToken(request.remoteUser)
+    fun refreshToken(request: HttpServletRequest): AccessToken = authService.refreshToken(request.remoteUser)
 }

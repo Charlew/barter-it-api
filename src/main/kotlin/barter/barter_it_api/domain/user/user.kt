@@ -26,19 +26,22 @@ data class UserAuthRequest (
 )
 
 data class UserLoginResponse(
-        val token: String,
+        val token: AccessToken,
         val id: String?,
-        val email: String,
-        val tokenExpirationDate: LocalDateTime
+        val email: String
+)
+
+data class AccessToken(
+        val value: String,
+        val expirationDate: LocalDateTime
 )
 
 fun UserAuthRequest.toUser(encodedPassword: String) = User(
         email = this.email,
         encodedPassword = encodedPassword)
 
-fun User.toUserLoginResponse(token: String, tokenExpirationDate: LocalDateTime) = UserLoginResponse(
-        token = token,
-        tokenExpirationDate = tokenExpirationDate,
+fun User.toUserLoginResponse(token: AccessToken) = UserLoginResponse(
         id = this.id,
-        email = this.email
+        email = this.email,
+        token = token
 )

@@ -20,9 +20,7 @@ class AuthService(
             return try {
                 authenticationManager.authenticate(UsernamePasswordAuthenticationToken(email, password))
                 val token = jwtTokenProvider.createToken(email)
-                val tokenExpirationDate = jwtTokenProvider.getExpirationDate(token)
-                val accessToken = AccessToken(token, tokenExpirationDate)
-                userRepository.findByEmail(email)!!.toUserLoginResponse(accessToken)
+                userRepository.findByEmail(email)!!.toUserLoginResponse(token)
             } catch (ex: AuthenticationException) {
                 throw ValidationException("Bad credentials")
             }
@@ -42,8 +40,6 @@ class AuthService(
         if (email == null) {
             throw ValidationException("User must be authenticated")
         }
-        val token = jwtTokenProvider.createToken(email)
-        val expirationDate = jwtTokenProvider.getExpirationDate(token)
-        return AccessToken(token, expirationDate)
+        return jwtTokenProvider.createToken(email)
     }
 }

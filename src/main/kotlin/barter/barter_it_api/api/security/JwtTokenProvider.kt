@@ -1,5 +1,6 @@
 package barter.barter_it_api.api.security
 
+import barter.barter_it_api.domain.user.AccessToken
 import barter.barter_it_api.localClock
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
@@ -26,16 +27,17 @@ class JwtTokenProvider(
         secretKey = Base64.getEncoder().encodeToString(secretKey.toByteArray())
     }
 
-    fun createToken(email: String): String {
+    fun createToken(email: String): AccessToken {
         val now = Date.from(Instant.now(localClock()))
-
-        return Jwts.builder()
+        val expirationDate = Date(now.time + validityInMilliseconds)
+        val token = Jwts.builder()
                 .setSubject(email)
                 .claim("roles", "user")
                 .setIssuedAt(now)
-                .setExpiration(Date(now.time + validityInMilliseconds))
+                .setExpiration(expirationDate)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact()
+        return AccessToken(token, expirationDate.toExpirationTime())
     }
 
     fun resolveToken(request: HttpServletRequest): String? {
@@ -73,12 +75,5 @@ class JwtTokenProvider(
         }
     }
 
-    fun getExpirationDate(token: String): LocalDateTime {
-        return Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
-                .body
-                .expiration.toInstant().atZone(localClock()?.zone).toLocalDateTime()
-    }
-
+    private fun Date.toExpirationTime(): LocalDateTime = this.toInstant().atZone(localClock()?.zone).toLocalDateTime()
 }

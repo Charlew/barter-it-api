@@ -32,7 +32,6 @@ class UserIT extends IntegrationSpec {
 
         then: 'expecting token'
             response.statusCode == OK
-            response.body.email == "email@example.com"
             response.body.token instanceof AccessToken
             response.body.token.expirationDate instanceof LocalDateTime
             response.body.token.value instanceof String

@@ -51,11 +51,19 @@ abstract class IntegrationSpec extends Specification {
         return objectMapper.writeValueAsString(object)
     }
 
-    HttpEntity<String> httpRequest(Object body) {
-        def json = mapToJson(body)
+    protected <T> HttpEntity<T> httpRequest(T body = null, String token = null) {
+        body == null ?: mapToJson(body)
+        def headers = buildHeaders(token)
+        return new HttpEntity<>(body, headers)
+    }
+
+    HttpHeaders buildHeaders(String token) {
         def httpHeaders = new HttpHeaders()
+        if (token != null) {
+            httpHeaders.setBearerAuth(token)
+        }
         httpHeaders.set("Content-type", "application/json")
-        return new HttpEntity<>(json, httpHeaders)
+        return httpHeaders
     }
 
     String url(String endpoint) {

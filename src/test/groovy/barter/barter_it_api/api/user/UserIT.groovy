@@ -2,11 +2,17 @@ package barter.barter_it_api.api.user
 
 import barter.barter_it_api.api.IntegrationSpec
 import barter.barter_it_api.api.Problem
+import barter.barter_it_api.domain.user.AccessToken
 import barter.barter_it_api.domain.user.AuthService
 import barter.barter_it_api.domain.user.UserLoginResponse
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpMethod
+
+import java.time.LocalDateTime
+import java.util.concurrent.TimeUnit
 
 import static barter.barter_it_api.Fixtures.*
+import static org.awaitility.Awaitility.await
 import static org.springframework.http.HttpStatus.*
 
 class UserIT extends IntegrationSpec {
@@ -26,8 +32,10 @@ class UserIT extends IntegrationSpec {
 
         then: 'expecting token'
             response.statusCode == OK
-            response.getBody().getTokenExpirationDate()
-            response.getBody().getEmail() == "email@example.com"
+            response.body.email == "email@example.com"
+            response.body.token instanceof AccessToken
+            response.body.token.expirationDate instanceof LocalDateTime
+            response.body.token.value instanceof String
     }
 
     def 'should not authenticate non existing user'() {
@@ -73,4 +81,34 @@ class UserIT extends IntegrationSpec {
             response.getBody().getCodes().contains("User: email@example.com already exists")
     }
 
+    def 'should refresh authentication token'() {
+        given:
+            authService.register(authRequest('email@example.com', 'password123'))
+            def userLoginRequest = httpRequest(authRequest('email@example.com', 'password123'))
+        when:
+            def response = http.postForEntity(url('login'), userLoginRequest, UserLoginResponse.class)
+            def token = response.body.token
+        and:
+            await()
+                .pollDelay(1000, TimeUnit.MILLISECONDS)
+                .until({ -> true })
+
+            def refreshedToken = http.exchange(url('refresh'),
+                HttpMethod.GET,
+                httpRequest(null, token.value),
+                AccessToken.class).body
+        then:
+            token instanceof AccessToken
+        and:
+            token.expirationDate != refreshedToken.expirationDate
+            token.value != refreshedToken.value
+    }
+
+    def 'should not allow to refresh token when user is not authenticated'() {
+        when:
+            def response = http.getForEntity(url('refresh'), Problem.class)
+        then:
+            response.statusCode == BAD_REQUEST
+            response.body.codes.contains('User must be authenticated')
+    }
 }

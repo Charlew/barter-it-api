@@ -44,6 +44,7 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {
 		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
 	}
+	testImplementation("org.awaitility:awaitility-groovy:4.0.2")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 }
 

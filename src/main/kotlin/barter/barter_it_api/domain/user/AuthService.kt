@@ -19,9 +19,8 @@ class AuthService(
     fun login(email: String, password: String): UserLoginResponse {
             return try {
                 authenticationManager.authenticate(UsernamePasswordAuthenticationToken(email, password))
-                val token = jwtTokenProvider.createToken(email, password)
-                val tokenExpirationDate = jwtTokenProvider.getExpirationDate(token)
-                userRepository.findByEmail(email)!!.toUserLoginResponse(token, tokenExpirationDate)
+                val token = jwtTokenProvider.createToken(email)
+                userRepository.findByEmail(email)!!.toUserLoginResponse(token)
             } catch (ex: AuthenticationException) {
                 throw ValidationException("Bad credentials")
             }
@@ -35,5 +34,12 @@ class AuthService(
             userRepository.save(it.toUser(bCryptPasswordEncoder.encode(userAuthRequest.password)))
             return "User: ${it.email} registered"
         }
+    }
+
+    fun refreshToken(email: String?): AccessToken {
+        if (email == null) {
+            throw ValidationException("User must be authenticated")
+        }
+        return jwtTokenProvider.createToken(email)
     }
 }

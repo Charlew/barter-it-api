@@ -37,7 +37,7 @@ class JwtTokenProvider(
                 .setExpiration(expirationDate)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact()
-        return AccessToken(token, expirationDate.toExpirationTime())
+        return AccessToken(token, expirationDate.toLocalDateTime())
     }
 
     fun resolveToken(request: HttpServletRequest): String? {
@@ -75,5 +75,5 @@ class JwtTokenProvider(
         }
     }
 
-    private fun Date.toExpirationTime(): LocalDateTime = this.toInstant().atZone(localClock()?.zone).toLocalDateTime()
+    private fun Date.toLocalDateTime(): LocalDateTime = this.toInstant().atZone(localClock()?.zone).toLocalDateTime()
 }

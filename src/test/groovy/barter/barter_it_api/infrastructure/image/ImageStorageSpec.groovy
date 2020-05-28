@@ -8,6 +8,7 @@ import org.testcontainers.shaded.org.apache.commons.io.IOUtils
 import spock.lang.Ignore
 import spock.lang.Specification
 
+@Ignore
 @TestPropertySource(value = "classpath:application-test.properties")
 @SpringBootTest
 class ImageStorageSpec extends Specification {
@@ -19,7 +20,6 @@ class ImageStorageSpec extends Specification {
         imageRepository.deleteAll()
     }
 
-    @Ignore
     def 'should store image'() {
         given:
             def file = new File(getClass().getResource('/cat.jpg').toURI())

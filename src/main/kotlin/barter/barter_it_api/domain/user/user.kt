@@ -27,8 +27,7 @@ data class UserAuthRequest (
 
 data class UserLoginResponse(
         val token: AccessToken,
-        val id: String?,
-        val email: String
+        val id: String?
 )
 
 data class AccessToken(
@@ -42,6 +41,5 @@ fun UserAuthRequest.toUser(encodedPassword: String) = User(
 
 fun User.toUserLoginResponse(token: AccessToken) = UserLoginResponse(
         id = this.id,
-        email = this.email,
         token = token
 )

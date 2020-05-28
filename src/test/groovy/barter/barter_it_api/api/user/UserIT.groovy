@@ -4,7 +4,7 @@ import barter.barter_it_api.api.IntegrationSpec
 import barter.barter_it_api.api.Problem
 import barter.barter_it_api.domain.user.AccessToken
 import barter.barter_it_api.domain.user.AuthService
-import barter.barter_it_api.domain.user.UserLoginResponse
+import barter.barter_it_api.domain.user.UserInfoResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpMethod
 
@@ -28,13 +28,12 @@ class UserIT extends IntegrationSpec {
             def userLoginRequest = httpRequest(authRequest('email@example.com', 'password123'))
 
         when:
-            def response = http.postForEntity(url("login"), userLoginRequest, UserLoginResponse.class)
+            def response = http.postForEntity(url("login"), userLoginRequest, AccessToken.class)
 
         then: 'expecting token'
             response.statusCode == OK
-            response.body.token instanceof AccessToken
-            response.body.token.expirationDate instanceof LocalDateTime
-            response.body.token.value instanceof String
+            response.body.value instanceof String
+            response.body.expirationDate instanceof LocalDateTime
     }
 
     def 'should not authenticate non existing user'() {
@@ -85,8 +84,8 @@ class UserIT extends IntegrationSpec {
             authService.register(authRequest('email@example.com', 'password123'))
             def userLoginRequest = httpRequest(authRequest('email@example.com', 'password123'))
         when:
-            def response = http.postForEntity(url('login'), userLoginRequest, UserLoginResponse.class)
-            def token = response.body.token
+            def response = http.postForEntity(url('login'), userLoginRequest, AccessToken.class)
+            def token = response.body
         and:
             await()
                 .pollDelay(1000, TimeUnit.MILLISECONDS)
@@ -97,8 +96,6 @@ class UserIT extends IntegrationSpec {
                 httpRequest(null, token.value),
                 AccessToken.class).body
         then:
-            token instanceof AccessToken
-        and:
             token.expirationDate != refreshedToken.expirationDate
             token.value != refreshedToken.value
     }
@@ -109,5 +106,25 @@ class UserIT extends IntegrationSpec {
         then:
             response.statusCode == BAD_REQUEST
             response.body.codes.contains('User must be authenticated')
+    }
+
+    def 'should return info about authenticated user'() {
+        given:
+            authService.register(authRequest('email@example.com', 'password123'))
+            def userLoginRequest = httpRequest(authRequest('email@example.com', 'password123'))
+        when:
+            def response = http.postForEntity(url('login'), userLoginRequest, AccessToken.class)
+            def token = response.body
+        and:
+            def userInfo = http.exchange(
+                url('info'),
+                HttpMethod.GET,
+                httpRequest(null, token.value),
+                UserInfoResponse.class
+            )
+        then:
+            userInfo.statusCode.'2xxSuccessful'
+            userInfo.body.email == 'email@example.com'
+            userInfo.body.id instanceof String
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.context.TestPropertySource
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils
+import spock.lang.Ignore
 import spock.lang.Specification
 
 @TestPropertySource(value = "classpath:application-test.properties")
@@ -18,6 +19,7 @@ class ImageStorageSpec extends Specification {
         imageRepository.deleteAll()
     }
 
+    @Ignore
     def 'should store image'() {
         given:
             def file = new File(getClass().getResource('/cat.jpg').toURI())

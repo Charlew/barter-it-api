@@ -4,7 +4,7 @@ import barter.barter_it_api.api.Validations
 import barter.barter_it_api.domain.user.AccessToken
 import barter.barter_it_api.domain.user.AuthService
 import barter.barter_it_api.domain.user.UserAuthRequest
-import barter.barter_it_api.domain.user.UserLoginResponse
+import barter.barter_it_api.domain.user.UserInfoResponse
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -19,7 +19,7 @@ class AuthEndpoint(
         private val validations: Validations
 ) {
     @PostMapping("login")
-    fun login(@RequestBody userAuthRequest: UserAuthRequest): UserLoginResponse {
+    fun login(@RequestBody userAuthRequest: UserAuthRequest): AccessToken {
         validations.validate(userAuthRequest)
 
         return authService.login(userAuthRequest.email, userAuthRequest.password)
@@ -34,4 +34,7 @@ class AuthEndpoint(
 
     @GetMapping("refresh")
     fun refreshToken(request: HttpServletRequest): AccessToken = authService.refreshToken(request.remoteUser)
+
+    @GetMapping("/info")
+    fun info(request: HttpServletRequest): UserInfoResponse = authService.getInfo(request)
 }

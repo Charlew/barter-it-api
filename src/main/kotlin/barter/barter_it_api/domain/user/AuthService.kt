@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import javax.servlet.http.HttpServletRequest
 
 @Service
 class AuthService(
@@ -16,11 +17,10 @@ class AuthService(
         private val userRepository: UserRepository,
         private val bCryptPasswordEncoder: BCryptPasswordEncoder
 ) {
-    fun login(email: String, password: String): UserLoginResponse {
+    fun login(email: String, password: String): AccessToken {
             return try {
                 authenticationManager.authenticate(UsernamePasswordAuthenticationToken(email, password))
-                val token = jwtTokenProvider.createToken(email)
-                userRepository.findByEmail(email)!!.toUserLoginResponse(token)
+                jwtTokenProvider.createToken(email)
             } catch (ex: AuthenticationException) {
                 throw ValidationException("Bad credentials")
             }
@@ -41,5 +41,10 @@ class AuthService(
             throw ValidationException("User must be authenticated")
         }
         return jwtTokenProvider.createToken(email)
+    }
+
+    fun getInfo(request: HttpServletRequest): UserInfoResponse {
+        val email = jwtTokenProvider.resolveToken(request).let { jwtTokenProvider.getEmail(it) }
+        return userRepository.findByEmail(email)!!.toUserInfo()
     }
 }

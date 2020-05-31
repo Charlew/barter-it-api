@@ -1,6 +1,7 @@
 package barter.barter_it_api.api.item
 
 import barter.barter_it_api.api.Validations
+import barter.barter_it_api.domain.item.Categories
 import barter.barter_it_api.domain.item.Item
 import barter.barter_it_api.domain.item.ItemFacade
 import barter.barter_it_api.domain.item.ItemRequest
@@ -41,4 +42,8 @@ class ItemEndpoint(private val facade: ItemFacade,
                      @RequestParam(value = "status", name = "status") status: Status): Item {
         return facade.updateStatusOfProposal(itemId, proposalId, status)
     }
+
+    @GetMapping("/categories", produces = [APPLICATION_JSON_VALUE])
+    fun getAllCategories(): Array<Categories> = Categories.values()
+
 }

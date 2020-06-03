@@ -19,7 +19,7 @@ class ImageServiceSpec extends Specification {
 
     def "should throw ValidationException when there is no image with given id"() {
         given:
-            imageRepository.findById(_ as String) >> null
+            imageRepository.loadResource(_ as String) >> null
         when:
             imageService.getImage(_ as String)
         then:

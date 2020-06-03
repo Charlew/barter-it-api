@@ -39,6 +39,8 @@ class ItemEndpoint(private val facade: ItemFacade,
     fun update(@RequestBody(required = true) itemRequest: ItemRequest): HttpStatus {
         validations.validate(itemRequest)
 
+        facade.update(itemRequest)
+
         return HttpStatus.NO_CONTENT
     }
 
@@ -46,6 +48,8 @@ class ItemEndpoint(private val facade: ItemFacade,
     fun updateStatusOfProposal(@PathVariable(name = "itemId") itemId: String,
                                @PathVariable(name = "proposalId") proposalId: String,
                                @RequestParam(value = "status", name = "status") status: Status): HttpStatus {
+        facade.updateStatusOfProposal(itemId, proposalId, status)
+
         return HttpStatus.NO_CONTENT
     }
 }
